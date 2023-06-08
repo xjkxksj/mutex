@@ -36,11 +36,15 @@ void* carRunningBetweenCities(void* numer)
 		if(cityA + cityAWaiting + cityB + cityBWaiting + bridge == carAmount)
 		{
 			//Samochód oczekuje na przejazd do miasta B
-			cityA--;
-			cityAWaiting++;
+			if(cityA > 0)
+			{
+				cityA--;
+				cityAWaiting++;
+			}
 			
 			//Wątek próbuje zająć mutex (samochód wjeżdża na most, o ile nie jest on zajęty przez inny samochód) 
 			pthread_mutex_lock(&mutex);
+			
 			//Jeśli most jest wolny
 			if(bridge == 0)
 			{
@@ -66,11 +70,15 @@ void* carRunningBetweenCities(void* numer)
 			usleep(rand()%500000);
 			
 			//Samochód oczekuje na przejazd do miasta B
-			cityB--;
-			cityBWaiting++;
+			if(cityB > 0)
+			{
+				cityB--;
+				cityBWaiting++;
+			}
 			
 			//Wątek próbuje zająć mutex (samochód wjeżdża na most, o ile nie jest on zajęty przez inny samochód) 
 			pthread_mutex_lock(&mutex);
+			
 			//Jeśli most jest wolny
 			if(bridge == 0)
 			{
@@ -109,7 +117,7 @@ int main(int argc, char** argv)
 {
 	//Ustawienie punktu startowego generatora pseudolosowego.
 	srand(time(0));
-	//Jeśli liczba argumentów podczas uruchomienia programu wynosi 2, wówczas zostanie odczytany podana liczba samochodów (wątków).
+	//Jeśli liczba argumentów podczas uruchomienia programu wynosi 2, wówczas zostanie odczytana podana liczba samochodów (wątków).
 	if(argc == 2)
 	{
 		carAmount = atoi(argv[1]);
@@ -127,7 +135,7 @@ int main(int argc, char** argv)
 	cityBWaiting = 0;
 	pthread_mutex_init(&mutex, NULL);
 	
-	//Deklaracja listy wątków (samochodów)
+	//Deklaracja listy wątków (samochodów).
 	pthread_t cars[carAmount];
 	
 	//Rozpoczęcie jazdy samochodów (wątków).

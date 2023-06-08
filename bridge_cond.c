@@ -35,16 +35,16 @@ int carFromAtoB(int numer)
 	//Jeśli nie wystąpił żaden błąd (wszystkie wątki synchronizują się poprawnie)
 	if(cityA + cityAWaiting + cityB + cityBWaiting + bridge == carAmount)
 	{
-		
-		//Wątek próbuje zająć mutex
-		pthread_mutex_lock(&mutex);
-		
 		//Samochód oczekuje na przejazd do miasta B
 		if(cityA > 0)
 		{
 			cityA--;
 			cityAWaiting++;
 		}
+		
+		//Wątek próbuje zająć mutex
+		pthread_mutex_lock(&mutex);
+		
 		//Jeśli most jest zajęty
 		if(bridge == 1)
 		{
@@ -104,16 +104,15 @@ int carFromBtoA(int numer)
 {
 	if(cityA + cityAWaiting + cityB + cityBWaiting + bridge == carAmount)
 	{
-		
-		//Wątek próbuje zająć mutex
-		pthread_mutex_lock(&mutex);
-		
 		//Samochód oczekuje na przejazd do miasta A
 		if(cityB > 0)
 		{
 			cityB--;
 			cityBWaiting++;
 		}
+		
+		//Wątek próbuje zająć mutex
+		pthread_mutex_lock(&mutex);
 		//Jeśli most jest zajęty
 		if(bridge == 1)
 		{
@@ -180,11 +179,10 @@ void* carBetweenCities(void* numer)
 
 			retAtoB = carFromAtoB((int)numer);
 			//Odczekanie chwili o losowej długości; samochód znajduje się w mieście A.
-			usleep(rand()%2500000);
+			usleep(rand()%500000);
 			retBtoA = carFromBtoA((int)numer);
 			//Odczekanie chwili o losowej długości; samochód znajduje się w mieście B.
-			usleep(rand()%250000);
-		
+			usleep(rand()%500000);
 	}
 	return NULL;
 }
@@ -213,7 +211,7 @@ int main(int argc, char** argv)
 	pthread_mutex_init(&mutex, NULL);
 	pthread_cond_init(&cond, NULL);
 	
-	//Deklaracja listy wątków (samochodów)
+	//Deklaracja listy wątków (samochodów).
 	pthread_t cars[carAmount];
 	
 	//Rozpoczęcie jazdy samochodów (wątków).
