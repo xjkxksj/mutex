@@ -36,11 +36,9 @@ void* carRunningBetweenCities(void* numer)
 		if(cityA + cityAWaiting + cityB + cityBWaiting + bridge == carAmount)
 		{
 			//Samochód oczekuje na przejazd do miasta B
-			if(cityA > 0)
-			{
-				cityA--;
-				cityAWaiting++;
-			}
+			cityA--;
+			cityAWaiting++;
+			
 			
 			//Wątek próbuje zająć mutex (samochód wjeżdża na most, o ile nie jest on zajęty przez inny samochód) 
 			pthread_mutex_lock(&mutex);
@@ -70,11 +68,8 @@ void* carRunningBetweenCities(void* numer)
 			usleep(rand()%500000);
 			
 			//Samochód oczekuje na przejazd do miasta B
-			if(cityB > 0)
-			{
-				cityB--;
-				cityBWaiting++;
-			}
+			cityB--;
+			cityBWaiting++;
 			
 			//Wątek próbuje zająć mutex (samochód wjeżdża na most, o ile nie jest on zajęty przez inny samochód) 
 			pthread_mutex_lock(&mutex);

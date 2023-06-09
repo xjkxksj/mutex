@@ -9,7 +9,7 @@ volatile int cityA; //Ile samochodów przebywa w mieście A i nie oczekuje na do
 volatile int cityB; //Ile samochodów przebywa w mieście B i nie oczekuje na dostęp do mostu
 volatile int cityAWaiting; //Ile samochodów przebywa w mieście A i oczekuje na wjazd na most
 volatile int cityBWaiting; //Ile samochodów przebywa w mieście B i oczekuje na wjazd na most
-volatile int bridge; //Czy most jest zajęty, czy też nie
+int bridge; //Czy most jest zajęty, czy też nie
 int carAmount; //Ilość samochodów jeżdżących pomiędzy miastami
 
 //Semafor służący do unikania równoczesnego użycia wspólnych danych przez wiele wątków
@@ -35,16 +35,16 @@ int carFromAtoB(int numer)
 	//Jeśli nie wystąpił żaden błąd (wszystkie wątki synchronizują się poprawnie)
 	if(cityA + cityAWaiting + cityB + cityBWaiting + bridge == carAmount)
 	{
+
+		
+		//Wątek próbuje zająć mutex
+		pthread_mutex_lock(&mutex);
 		//Samochód oczekuje na przejazd do miasta B
 		if(cityA > 0)
 		{
 			cityA--;
 			cityAWaiting++;
 		}
-		
-		//Wątek próbuje zająć mutex
-		pthread_mutex_lock(&mutex);
-		
 		//Jeśli most jest zajęty
 		if(bridge == 1)
 		{
@@ -104,15 +104,17 @@ int carFromBtoA(int numer)
 {
 	if(cityA + cityAWaiting + cityB + cityBWaiting + bridge == carAmount)
 	{
+		
+		
+		//Wątek próbuje zająć mutex
+		pthread_mutex_lock(&mutex);
+		
 		//Samochód oczekuje na przejazd do miasta A
 		if(cityB > 0)
 		{
 			cityB--;
 			cityBWaiting++;
 		}
-		
-		//Wątek próbuje zająć mutex
-		pthread_mutex_lock(&mutex);
 		//Jeśli most jest zajęty
 		if(bridge == 1)
 		{
